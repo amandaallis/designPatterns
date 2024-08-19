@@ -1,0 +1,28 @@
+
+import abstractFactory.app.Application;
+import abstractFactory.factories.ITransportFactory;
+import abstractFactory.factories.NineNineTransport;
+import abstractFactory.factories.UberTransport;
+
+public class Main {
+    private static Application configureApplication() {
+        Application app;
+        ITransportFactory iTransportFactory;
+
+        String company = "uber";
+
+        if (company == "uber") {
+            iTransportFactory = new UberTransport();
+        } else  {
+            iTransportFactory = new NineNineTransport();
+        }
+        app = new Application(iTransportFactory);
+        return app;
+    }
+
+    public static void main(String[] args) {
+        Application app = configureApplication();
+        app.startRoute();
+    }
+
+}
