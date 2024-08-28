@@ -1,2 +1,5 @@
-package builder.components;public class CarType {
+package builder.components;
+
+public enum CarType {
+    SEDAN, SPORTCAR, TRUCK, CAMINHAO
 }
