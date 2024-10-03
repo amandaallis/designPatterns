@@ -1,32 +1,42 @@
-import builder.builders.CarBuilder;
-import builder.builders.SportBuilder;
-import builder.builders.TruckBuilder;
-import builder.cars.Car;
-import builder.cars.Truck;
-import builder.director.Director;
+import chainOfResponsability.middleware.CheckPermissionMiddleware;
+import chainOfResponsability.middleware.Middleware;
+import chainOfResponsability.middlewares.CheckUserMiddleware;
+import chainOfResponsability.server.Server;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
 
 public class Main {
 
-    public static void main(String[] args) {
-        Director director = new Director();
+    private static final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+    private static Server server;
 
-        //Criando o carro
-        CarBuilder builder = new CarBuilder();
-        director.constructSedan(builder);
+    public static void init() {
+        server = new Server();
+        server.registerUser("amanda@gmail.com", "123");
+        server.registerUser("testeRegister", "123");
 
-        Car car = builder.getResult();
-        System.out.println(car.getCarType() + "produzido com sucesso");
-
-        TruckBuilder truckBuilder = new TruckBuilder();
-        director.constructTruck(truckBuilder);
-
-        Truck truck = truckBuilder.getResult();
-        System.out.println(truck.result());
-
-        SportBuilder sportCarBuilder = new SportBuilder();
-        director.constructSportCar(builder,"rosa");
-        System.out.println("Carro do tipo "+ sportCarBuilder.getCarType());
-
+        Middleware middleware = new CheckUserMiddleware(server);
+        middleware.linkWith(new CheckPermissionMiddleware());
+        server.setMiddleware(middleware);
     }
 
+    public static void main(String[] args) {
+        init();
+
+        boolean done;
+
+        try {
+            do {
+                System.out.println("Digite o e-mail:");
+                String email = reader.readLine(); // pode lançar IOException
+                System.out.println("Digite a sua senha:");
+                String password = reader.readLine(); // pode lançar IOException
+                done = server.logIn(email, password);
+            } while (!done);
+        } catch (IOException e) {
+            System.out.println("Ocorreu um erro na leitura dos dados: " + e.getMessage());
+        }
+    }
 }

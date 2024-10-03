@@ -1,0 +1,14 @@
+import adapter.adapter.AdapterMercadoPago;
+import adapter.mercadoPago.MercadoPago;
+import adapter.paypal.IpayPalPayment;
+
+public class Main {
+
+    public static void main(String[] args) {
+        IpayPalPayment payPalPayment = new AdapterMercadoPago(new MercadoPago());
+
+        payPalPayment.paypalPayment();
+        payPalPayment.paypalReceive();
+    }
+
+}
